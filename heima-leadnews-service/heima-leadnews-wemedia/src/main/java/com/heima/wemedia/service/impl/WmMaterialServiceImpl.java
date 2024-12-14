@@ -86,7 +86,7 @@ public class WmMaterialServiceImpl extends ServiceImpl<WmMaterialMapper, WmMater
         //1.检查参数
         dto.checkParam();
         //2.分页查询
-        Page page = new Page(dto.getPage(),dto.getSize());
+        Page page = new Page(dto.getPage(), dto.getSize());
         LambdaQueryWrapper<WmMaterial> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         if(dto.getIsCollection()!=null&&dto.getIsCollection()==1){
             lambdaQueryWrapper.eq(WmMaterial::getIsCollection,dto.getIsCollection());
