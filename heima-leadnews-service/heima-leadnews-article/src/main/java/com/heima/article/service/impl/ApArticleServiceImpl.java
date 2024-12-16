@@ -77,30 +77,34 @@ public class ApArticleServiceImpl extends ServiceImpl<ApArticleMapper, ApArticle
     @Override
     public ResponseResult saveArticle(ArticleDto dto) {
         //1.检查参数
-        if(dto==null || dto.getContent()==null){
+        if(dto == null){
             return ResponseResult.errorResult(AppHttpCodeEnum.PARAM_INVALID);
         }
         ApArticle apArticle = new ApArticle();
         BeanUtils.copyProperties(dto,apArticle);
         //2.判断是否存在id
-        if(dto.getId()==null){
+        if(dto.getId() == null){
+            //2.1 不存在id  保存  文章  文章配置  文章内容
             //保存文章
             save(apArticle);
             //保存配置
             ApArticleConfig apArticleConfig = new ApArticleConfig(apArticle.getId());
             apArticleConfigMapper.insert(apArticleConfig);
-            //保存文章内容
+            //保存 文章内容
             ApArticleContent apArticleContent = new ApArticleContent();
             apArticleContent.setArticleId(apArticle.getId());
             apArticleContent.setContent(dto.getContent());
             apArticleContentMapper.insert(apArticleContent);
-        }else{
+        }else {
+            //2.2 存在id   修改  文章  文章内容
             //修改  文章
             updateById(apArticle);
             //修改文章内容
             ApArticleContent apArticleContent = apArticleContentMapper.selectOne(Wrappers.<ApArticleContent>lambdaQuery().eq(ApArticleContent::getArticleId, dto.getId()));
+            apArticleContent.setContent(dto.getContent());
             apArticleContentMapper.updateById(apArticleContent);
         }
+        //3.结果返回  文章的id
         return ResponseResult.okResult(apArticle.getId());
     }
 }
