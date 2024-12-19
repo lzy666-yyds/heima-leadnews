@@ -1009,20 +1009,20 @@ sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
       <CollationName>utf8mb3_general_ci</CollationName>
     </schema>
     <schema id="293" parent="1" name="leadnews_article">
-      <LastIntrospectionLocalTimestamp>2024-12-18.10:54:24</LastIntrospectionLocalTimestamp>
+      <LastIntrospectionLocalTimestamp>2024-12-19.10:49:56</LastIntrospectionLocalTimestamp>
       <CollationName>utf8mb4_unicode_ci</CollationName>
     </schema>
     <schema id="294" parent="1" name="leadnews_schedule">
-      <LastIntrospectionLocalTimestamp>2024-12-18.12:20:58</LastIntrospectionLocalTimestamp>
+      <LastIntrospectionLocalTimestamp>2024-12-19.11:19:45</LastIntrospectionLocalTimestamp>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
     <schema id="295" parent="1" name="leadnews_user">
       <Current>1</Current>
-      <LastIntrospectionLocalTimestamp>2024-12-18.10:54:24</LastIntrospectionLocalTimestamp>
+      <LastIntrospectionLocalTimestamp>2024-12-19.10:49:56</LastIntrospectionLocalTimestamp>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
     <schema id="296" parent="1" name="leadnews_wemedia">
-      <LastIntrospectionLocalTimestamp>2024-12-18.10:54:24</LastIntrospectionLocalTimestamp>
+      <LastIntrospectionLocalTimestamp>2024-12-19.10:49:56</LastIntrospectionLocalTimestamp>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
     <schema id="297" parent="1" name="mp">
