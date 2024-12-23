@@ -16,4 +16,5 @@ public interface WmNewsService extends IService<WmNews> {
     ResponseResult submitNews(WmNewsDto dto);
 
 
+    ResponseResult downOrUp(WmNewsDto dto);
 }
