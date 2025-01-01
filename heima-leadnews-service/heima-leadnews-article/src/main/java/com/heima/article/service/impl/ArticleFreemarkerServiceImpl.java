@@ -53,9 +53,6 @@ public class ArticleFreemarkerServiceImpl implements ArticleFreemarkerService {
     private ApArticleMapper apArticleMapper;
 
     @Autowired
-    private ApArticleContentMapper apArticleContentMapper;
-
-    @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
 
     @Async
