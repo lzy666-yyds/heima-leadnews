@@ -1,6 +1,5 @@
-package com.heima.search.controller.v1;/**
- * @Description:
- */
+package com.heima.search.controller.v1;
+
 
 import com.heima.model.common.dtos.ResponseResult;
 import com.heima.model.search.dtos.UserSearchDto;
@@ -13,16 +12,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 
-/**
- *@Desc:app端文章搜索
- *@Author: lzy
- *@CreateTime: 2024-12-24  18:18
- */
 @RestController
 @RequestMapping("/api/v1/article/search")
 public class ArticleSearchController {
+
     @Autowired
     private ArticleSearchService articleSearchService;
+
     @PostMapping("/search")
     public ResponseResult search(@RequestBody UserSearchDto dto) throws IOException {
         return articleSearchService.search(dto);

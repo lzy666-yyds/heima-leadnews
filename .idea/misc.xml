@@ -12,6 +12,7 @@
         <option value="$PROJECT_DIR$/heima-leadnews-test/tess4j-demo/pom.xml" />
         <option value="$PROJECT_DIR$/heima-leadnews-service/heima-leadnews-schedule/pom.xml" />
         <option value="$PROJECT_DIR$/heima-leadnews-service/heima-leadnews-search/pom.xml" />
+        <option value="$PROJECT_DIR$/heima-leadnews-service/heima-leadnews-admin/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">

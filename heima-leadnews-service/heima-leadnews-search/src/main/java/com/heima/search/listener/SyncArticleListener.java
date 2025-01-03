@@ -1,12 +1,10 @@
-package com.heima.search.listener;/**
- * @Description:
- */
+package com.heima.search.listener;
 
 import com.alibaba.fastjson.JSON;
 import com.heima.common.constants.ArticleConstants;
 import com.heima.model.search.vos.SearchArticleVo;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -17,14 +15,10 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-/**
- *@Desc:
- *@Author: lzy
- *@CreateTime: 2024-12-24  19:11
- */
 @Component
 @Slf4j
 public class SyncArticleListener {
+
     @Autowired
     private RestHighLevelClient restHighLevelClient;
 
