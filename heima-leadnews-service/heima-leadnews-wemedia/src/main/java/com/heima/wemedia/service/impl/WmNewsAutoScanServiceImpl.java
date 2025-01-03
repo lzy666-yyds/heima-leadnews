@@ -175,7 +175,7 @@ public class WmNewsAutoScanServiceImpl implements WmNewsAutoScanService {
     /**
      * @Desc: 保存app端的相关的文章数据
      **/
-    private ResponseResult saveAppArticle(WmNews wmNews) {
+    public ResponseResult saveAppArticle(WmNews wmNews) {
 
         ArticleDto dto = new ArticleDto();
         //属性的拷贝
