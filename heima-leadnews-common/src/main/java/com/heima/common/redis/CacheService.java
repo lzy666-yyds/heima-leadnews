@@ -362,8 +362,8 @@ public class CacheService extends CachingConfigurerSupport {
      * @param field
      * @return
      */
-    public boolean hGet(String key, String field) {
-        return (boolean) stringRedisTemplate.opsForHash().get(key, field);
+    public Object hGet(String key, String field) {
+        return stringRedisTemplate.opsForHash().get(key, field);
     }
 
     /**

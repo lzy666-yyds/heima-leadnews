@@ -2,31 +2,31 @@ package com.heima.behavior.controller.v1;/**
  * @Description:
  */
 
-import com.heima.behavior.service.ApLikesBehaviorService;
+import com.heima.behavior.service.ApReadBehaviorService;
 import com.heima.model.behavior.dtos.LikesBehaviorDto;
+import com.heima.model.behavior.dtos.ReadBehaviorDto;
 import com.heima.model.common.dtos.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  *@Desc:
  *@Author: lzy
- *@CreateTime: 2025-01-04  15:53
+ *@CreateTime: 2025-01-04  18:09
  */
 @RestController
-@RequestMapping("/api/v1/likes_behavior")
-public class ApLikesBehaviorController {
+@RequestMapping("/api/v1/read_behavior")
+public class ApReadBehaviorController {
     @Autowired
-    private ApLikesBehaviorService apLikesBehaviorService;
+    private ApReadBehaviorService apReadBehaviorService;
     /**
-     * @Desc:点赞
+     * @Desc:阅读
      **/
     @PostMapping
-    public ResponseResult likesBehavior(@RequestBody LikesBehaviorDto dto) {
-        return apLikesBehaviorService.likesBehavior(dto);
+    public ResponseResult readBehavior(@RequestBody ReadBehaviorDto dto) {
+        return apReadBehaviorService.readBehavior(dto);
     }
 }

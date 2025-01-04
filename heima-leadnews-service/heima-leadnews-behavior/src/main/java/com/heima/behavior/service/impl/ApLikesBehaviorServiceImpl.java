@@ -50,8 +50,8 @@ public class ApLikesBehaviorServiceImpl implements ApLikesBehaviorService {
 
         //3.判断是否点赞
         if(dto.getOperation()==0){
-            boolean b = cacheService.hGet(BehaviorConstants.LIKE_BEHAVIOR + dto.getArticleId().toString(), apUser.getId().toString());
-            if(b){
+            Object get = cacheService.hGet(BehaviorConstants.LIKE_BEHAVIOR + dto.getArticleId().toString(), apUser.getId().toString());
+            if( get!=null){
                 return ResponseResult.errorResult(AppHttpCodeEnum.PARAM_INVALID,"您已经点过赞了");
             }else{
                 //4.点赞
