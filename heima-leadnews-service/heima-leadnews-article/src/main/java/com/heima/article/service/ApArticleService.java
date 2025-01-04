@@ -5,6 +5,7 @@ import com.heima.model.article.dtos.ArticleDto;
 import com.heima.model.article.dtos.ArticleHomeDto;
 import com.heima.model.article.pojos.ApArticle;
 import com.heima.model.common.dtos.ResponseResult;
+import com.heima.model.mess.ArticleVisitStreamMess;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.InvocationTargetException;
@@ -22,4 +23,6 @@ public interface ApArticleService extends IService<ApArticle> {
      * @Desc:保存文章
      **/
     ResponseResult saveArticle(ArticleDto dto);
+
+    void updateScore(ArticleVisitStreamMess mess);
 }
