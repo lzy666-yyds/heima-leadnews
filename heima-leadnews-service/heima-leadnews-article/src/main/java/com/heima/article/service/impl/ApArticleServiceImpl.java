@@ -13,9 +13,11 @@ import com.heima.article.mapper.ApArticleMapper;
 import com.heima.article.service.ApArticleService;
 import com.heima.article.service.ArticleFreemarkerService;
 import com.heima.common.constants.ArticleConstants;
+import com.heima.common.constants.BehaviorConstants;
 import com.heima.common.redis.CacheService;
 import com.heima.model.article.dtos.ArticleDto;
 import com.heima.model.article.dtos.ArticleHomeDto;
+import com.heima.model.article.dtos.ArticleInfoDto;
 import com.heima.model.article.pojos.ApArticle;
 import com.heima.model.article.pojos.ApArticleConfig;
 import com.heima.model.article.pojos.ApArticleContent;
@@ -23,6 +25,8 @@ import com.heima.model.article.vos.HotArticleVo;
 import com.heima.model.common.dtos.ResponseResult;
 import com.heima.model.common.enums.AppHttpCodeEnum;
 import com.heima.model.mess.ArticleVisitStreamMess;
+import com.heima.model.user.pojos.ApUser;
+import com.heima.utils.common.utils.thread.AppThreadLocalUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -31,9 +35,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -140,6 +142,56 @@ public class ApArticleServiceImpl extends ServiceImpl<ApArticleMapper, ApArticle
 
         // 4. 替换推荐对应的热点数据
         replaceDataToRedis(apArticle, score, ArticleConstants.HOT_ARTICLE_FIRST_PAGE + ArticleConstants.DEFAULT_TAG);
+    }
+
+    @Override
+    public ResponseResult loadArticleBehavior(ArticleInfoDto dto) {
+        // 1. 检查参数
+        if (dto == null || dto.getArticleId() == null || dto.getAuthorId() == null) {
+            return ResponseResult.errorResult(AppHttpCodeEnum.PARAM_INVALID);
+        }
+
+        // 2. 初始化行为状态
+        boolean isFollow = false, isLike = false, isUnlike = false, isCollection = false;
+
+        // 3. 获取用户信息
+        ApUser user = AppThreadLocalUtil.getUser();
+
+        // 4. 判断是否登录
+        if (user != null) {
+            // 4.1 喜欢行为
+            String likeBehaviorJson = (String) cacheService.hGet(BehaviorConstants.LIKE_BEHAVIOR + dto.getArticleId().toString(), user.getId().toString());
+            if (StringUtils.isNotBlank(likeBehaviorJson)) {
+                isLike = true;
+            }
+
+            // 4.2 不喜欢的行为
+            String unLikeBehaviorJson = (String) cacheService.hGet(BehaviorConstants.UN_LIKE_BEHAVIOR + dto.getArticleId().toString(), user.getId().toString());
+            if (StringUtils.isNotBlank(unLikeBehaviorJson)) {
+                isUnlike = true;
+            }
+
+            // 4.3 是否收藏
+            String collectionJson = (String) cacheService.hGet(BehaviorConstants.COLLECTION_BEHAVIOR + dto.getArticleId().toString(), user.getId().toString());
+            if (StringUtils.isNotBlank(collectionJson)) {
+                isCollection = true;
+            }
+
+            // 4.4 是否关注
+            Double score = cacheService.zScore(BehaviorConstants.APUSER_FOLLOW_RELATION + user.getId(), dto.getAuthorId().toString());
+            if (score != null) {
+                isFollow = true;
+            }
+        }
+
+        // 5. 构建返回结果
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("isfollow", isFollow);
+        resultMap.put("islike", isLike);
+        resultMap.put("isunlike", isUnlike);
+        resultMap.put("iscollection", isCollection);
+
+        return ResponseResult.okResult(resultMap);
     }
 
     /**

@@ -5,6 +5,7 @@ package com.heima.article.controller.v1;/**
 import com.heima.article.service.ApArticleService;
 import com.heima.common.constants.ArticleConstants;
 import com.heima.model.article.dtos.ArticleHomeDto;
+import com.heima.model.article.dtos.ArticleInfoDto;
 import com.heima.model.common.dtos.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -45,5 +46,12 @@ public class ArticleHomeController {
     @PostMapping("/loadnew")
     public ResponseResult loadNew(@RequestBody ArticleHomeDto dto){
         return apArticleService.load(ArticleConstants.LOADTYPE_LOAD_NEW,dto);
+    }
+    /**
+     * @Desc: 行文数据的回显
+     **/
+    @PostMapping("/load_article_behavior")
+    public ResponseResult loadArticleBehavior(@RequestBody ArticleInfoDto dto){
+        return apArticleService.loadArticleBehavior(dto);
     }
 }
