@@ -85,6 +85,19 @@ public class ApArticleServiceImpl extends ServiceImpl<ApArticleMapper, ApArticle
         return responseResult;
     }
 
+    @Override
+    public ResponseResult load2(Short loadtype, ArticleHomeDto dto, boolean firstPage) {
+        //是首页就从redis加载数据
+        if(firstPage){
+            String jsonStr = cacheService.get(ArticleConstants.HOT_ARTICLE_FIRST_PAGE + dto.getTag());
+            if(StringUtils.isNotBlank(jsonStr)){
+                List<HotArticleVo> hotArticleVos = JSON.parseArray(jsonStr, HotArticleVo.class);
+                return ResponseResult.okResult(hotArticleVos);
+            }
+        }
+        return load(loadtype,dto);
+    }
+
     /**
      * @Desc:文章保存接口
      **/

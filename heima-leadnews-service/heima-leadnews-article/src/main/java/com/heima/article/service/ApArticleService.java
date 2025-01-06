@@ -20,6 +20,8 @@ public interface ApArticleService extends IService<ApArticle> {
      **/
     ResponseResult load(Short loadtype, ArticleHomeDto dto);
 
+    ResponseResult load2(Short loadtype, ArticleHomeDto dto,boolean firstPage);
+
     /**
      * @Desc:保存文章
      **/

@@ -30,9 +30,6 @@ public class ApUserRealnameServiceImpl extends ServiceImpl<ApUserRealnameMapper,
 
     @Override
     public ResponseResult findAll(AuthDto dto) {
-        //- 根据审核状态条件查询
-        //- 需要分页查询
-
         // 校验参数
         if(dto==null){
             return ResponseResult.errorResult(500,"参数错误");

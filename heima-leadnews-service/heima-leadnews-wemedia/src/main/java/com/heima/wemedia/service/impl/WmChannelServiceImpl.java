@@ -36,6 +36,9 @@ public class WmChannelServiceImpl extends ServiceImpl<WmChannelMapper, WmChannel
     private WmChannelMapper wmChannelMapper;
     @Autowired
     private WmNewsMapper wmNewsMapper;
+    /**
+     * @Desc: 查询所有频道
+     **/
     @Override
     public ResponseResult findAll() {
         return ResponseResult.okResult(list());
