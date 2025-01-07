@@ -30,4 +30,5 @@ public interface ApArticleService extends IService<ApArticle> {
     void updateScore(ArticleVisitStreamMess mess);
 
     ResponseResult loadArticleBehavior(ArticleInfoDto dto);
+
 }

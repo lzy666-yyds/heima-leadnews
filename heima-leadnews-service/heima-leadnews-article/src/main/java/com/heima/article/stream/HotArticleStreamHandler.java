@@ -14,61 +14,52 @@ import org.springframework.context.annotation.Configuration;
 
 import java.time.Duration;
 
-/**
- * 用户行为数据的实时聚合
- */
-
 @Configuration
 @Slf4j
 public class HotArticleStreamHandler {
-
     @Bean
-    public KStream<String, String> kStream(StreamsBuilder streamsBuilder) {
-        // 1. 接收消息
-        KStream<String, String> stream = streamsBuilder.stream(HotArticleConstants.HOT_ARTICLE_SCORE_TOPIC);
-
-        // 2. 聚合流式处理
-        stream.map((key, value) -> {
+    public KStream<String,String> kStream(StreamsBuilder streamsBuilder){
+        //接收消息
+        KStream<String,String> stream = streamsBuilder.stream(HotArticleConstants.HOT_ARTICLE_SCORE_TOPIC);
+        //聚合流式处理
+        stream.map((key,value)->{
                     UpdateArticleMess mess = JSON.parseObject(value, UpdateArticleMess.class);
-                    // 重置消息的key:1234343434 和 value:like:1
-                    return new KeyValue<>(mess.getArticleId().toString(), mess.getType().name() + ":" + mess.getAdd());
+                    //重置消息的key:1234343434   和  value: likes:1
+                    return new KeyValue<>(mess.getArticleId().toString(),mess.getType().name()+":"+mess.getAdd());
                 })
-                // 按照文章id进行聚合
-                .groupBy((key, value) -> key)
-                // 时间窗口：10秒
+                //按照文章id进行聚合
+                .groupBy((key,value)->key)
+                //时间窗口
                 .windowedBy(TimeWindows.of(Duration.ofSeconds(10)))
-                // 自行的完成聚合的计算
+                /**
+                 * 自行的完成聚合的计算
+                 */
                 .aggregate(new Initializer<String>() {
                     /**
                      * 初始方法，返回值是消息的value
-                     *
                      * @return
                      */
                     @Override
                     public String apply() {
                         return "COLLECTION:0,COMMENT:0,LIKES:0,VIEWS:0";
                     }
-                    // 真正的聚合操作，返回值是消息的value
-                }, new Aggregator<String, String, String>() {
                     /**
-                     * @param key
-                     * @param value
-                     * @param aggValue
-                     * @return
+                     * 真正的聚合操作，返回值是消息的value
                      */
+                }, new Aggregator<String, String, String>() {
                     @Override
                     public String apply(String key, String value, String aggValue) {
-                        System.out.println(value);
-                        if(StringUtils.isBlank(value)) {
+                        if(StringUtils.isBlank(value)){
                             return aggValue;
                         }
                         String[] aggAry = aggValue.split(",");
-                        int col = 0, com = 0, like = 0, vie = 0;
+                        int col = 0,com=0,lik=0,vie=0;
                         for (String agg : aggAry) {
                             String[] split = agg.split(":");
-                            // 获得初始值，也是时间窗口内计算之后的值
-                            // 根据新的消息值对相应的计数进行累加，确保计数器保存最新状态
-                            switch (UpdateArticleMess.UpdateArticleType.valueOf(split[0])) {
+                            /**
+                             * 获得初始值，也是时间窗口内计算之后的值
+                             */
+                            switch (UpdateArticleMess.UpdateArticleType.valueOf(split[0])){
                                 case COLLECTION:
                                     col = Integer.parseInt(split[1]);
                                     break;
@@ -76,16 +67,18 @@ public class HotArticleStreamHandler {
                                     com = Integer.parseInt(split[1]);
                                     break;
                                 case LIKES:
-                                    like = Integer.parseInt(split[1]);
+                                    lik = Integer.parseInt(split[1]);
                                     break;
                                 case VIEWS:
                                     vie = Integer.parseInt(split[1]);
                                     break;
                             }
                         }
-                        // 累加操作 likes:1
+                        /**
+                         * 累加操作
+                         */
                         String[] valAry = value.split(":");
-                        switch (UpdateArticleMess.UpdateArticleType.valueOf(valAry[0])) {
+                        switch (UpdateArticleMess.UpdateArticleType.valueOf(valAry[0])){
                             case COLLECTION:
                                 col += Integer.parseInt(valAry[1]);
                                 break;
@@ -93,27 +86,29 @@ public class HotArticleStreamHandler {
                                 com += Integer.parseInt(valAry[1]);
                                 break;
                             case LIKES:
-                                like += Integer.parseInt(valAry[1]);
+                                lik += Integer.parseInt(valAry[1]);
                                 break;
                             case VIEWS:
                                 vie += Integer.parseInt(valAry[1]);
                                 break;
                         }
 
-                        String formatStr = String.format("COLLECTION:%d,COMMENT:%d,LIKES:%d,VIEWS:%d", col, com, like, vie);
-                        System.out.println("文章的id: " + key);
-                        System.out.println("当前时间窗口内的消息处理结果: " + formatStr);
+                        String formatStr = String.format("COLLECTION:%d,COMMENT:%d,LIKES:%d,VIEWS:%d", col, com, lik, vie);
+                        System.out.println("文章的id:"+key);
+                        System.out.println("当前时间窗口内的消息处理结果："+formatStr);
                         return formatStr;
                     }
-                }, Materialized.as("hot-article-stream-count-001"))
+                }, Materialized.as("hot-atricle-stream-count-001"))
                 .toStream()
-                .map((key, value) -> {
-                    return new KeyValue<>(key.key().toString(), formatObj(key.key().toString(), value));
+                .map((key,value)->{
+                    return new KeyValue<>(key.key().toString(),formatObj(key.key().toString(),value));
                 })
-                // 发送消息
+                //发送消息
                 .to(HotArticleConstants.HOT_ARTICLE_INCR_HANDLE_TOPIC);
 
         return stream;
+
+
     }
 
     /**
@@ -122,14 +117,14 @@ public class HotArticleStreamHandler {
      * @param value
      * @return
      */
-    private String formatObj(String articleId, String value) {
+    public String formatObj(String articleId,String value){
         ArticleVisitStreamMess mess = new ArticleVisitStreamMess();
         mess.setArticleId(Long.valueOf(articleId));
         //COLLECTION:0,COMMENT:0,LIKES:0,VIEWS:0
         String[] valAry = value.split(",");
         for (String val : valAry) {
             String[] split = val.split(":");
-            switch (UpdateArticleMess.UpdateArticleType.valueOf(split[0])) {
+            switch (UpdateArticleMess.UpdateArticleType.valueOf(split[0])){
                 case COLLECTION:
                     mess.setCollect(Integer.parseInt(split[1]));
                     break;
@@ -144,8 +139,7 @@ public class HotArticleStreamHandler {
                     break;
             }
         }
-
-        log.info("聚合消息处理之后的结果为：{}", JSON.toJSONString(mess));
+        log.info("聚合消息处理之后的结果为:{}",JSON.toJSONString(mess));
         return JSON.toJSONString(mess);
     }
 }

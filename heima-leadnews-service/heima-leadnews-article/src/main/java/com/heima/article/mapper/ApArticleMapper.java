@@ -17,5 +17,5 @@ public interface ApArticleMapper extends BaseMapper<ApArticle> {
     //查询内容
     public List<ApArticle> loadArticleList(@Param("dto")ArticleHomeDto dto,@Param("type") Short type);
 
-    List<ApArticle> findArticleListByLast5days(Date dateParam);
+    List<ApArticle> findArticleListByLast5days(@Param("dateParam")Date dateParam);
 }
