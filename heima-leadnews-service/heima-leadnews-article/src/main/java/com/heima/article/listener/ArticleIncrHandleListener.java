@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 public class ArticleIncrHandleListener {
     @Autowired
     private ApArticleService apArticleService;
-
     @KafkaListener(topics = HotArticleConstants.HOT_ARTICLE_INCR_HANDLE_TOPIC)
     public void onMessage(String msg) {
         if(StringUtils.isNotBlank(msg)) {
