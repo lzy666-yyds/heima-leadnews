@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.heima.wemedia.mapper.WmUserMapper">
+
+
+    <select id="findListAndPage" resultType="com.heima.model.wemedia.vos.WmNewsVo">
+        select *,wm_user.name authorName from wm_news left join wm_user on wm_news.user_id = wm_user.id
+        <where>
+            <if test="dto.id != null">
+                and wm_news.id = #{dto.id}
+            </if>
+            <if test="dto.title != null and dto.title != ''">
+                and wm_news.title like concat('%',#{dto.title},'%')
+            </if>
+            <if test="dto.status != null">
+                and wm_news.status = #{dto.status}
+            </if>
+        </where>
+        order by wm_news.created_time desc
+    </select>
+</mapper>
